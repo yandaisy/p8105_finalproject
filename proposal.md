@@ -34,26 +34,48 @@ policies and trends relating to abortion access and number of abortions.
 
 Our final project will results in the following:
 
-- Graphs/dashboards depicting the results of our analysis
-- Report explaining our methodology and findings
-- Interactive website with all components of the project
-- Screencast going through website
+-   Graphs/dashboards depicting the results of our analysis
+-   Report explaining our methodology and findings
+-   Interactive website with all components of the project
+-   Screencast going through website
 
 ### Anticipated Data Sources
 
-New York:
+New York and Mississippi:
 
-- Guttmacher Institute:
-  <https://data.guttmacher.org/states?state=NY&topics=65+66>
-- NY State Department of Health:
-  <https://www.health.ny.gov/statistics/vital_statistics/2019/>
+-   Guttmacher Institute:
+    <https://data.guttmacher.org/states/table?state=NY+MS&topics=65+66+203+205+152+151+109+110+111+157&dataset=data>
 
-Georgia:
-
-- Guttmacher Institute:
-  <https://data.guttmacher.org/states/table?state=GA&topics=65+66&dataset=data>
+-   NY State Department of Health:
+    <https://www.health.ny.gov/statistics/vital_statistics/2019/>
 
 ### Planned Analyses / Visualizations / Coding Challenges
+
+**Explanatory analysis**
+
+-   Rate of abortion per 1000 women in New York and Mississippi across 4
+    years (2016-2020)
+-   Rate of abortion per 1000 women by age in New York and Mississippi
+-   Rate of abortion per 1000 women by race/ethnicity in New York and
+    Mississippi
+-   Rate of abortion per 1000 women by insurance plan in New York and
+    Mississippi
+
+**Outcomes of interest**: percent change in abortion rate over time
+
+**Confounder**: race/ethnicity, year, methods (induced vs spontaneous),
+age group, SES/income/insurance plan
+
+**Visualizations**:
+
+-   Interactive mapping on abortion laws by state throughout time
+    (2016-2020)
+-   Bar graph during exploratory analysis when comparing New York to
+    Mississippi
+-   Interactive mapping of abortion rate over time
+
+**Coding challenges**: Potential challenge in analyzing the data because
+they are group-level data
 
 ### Planned Timeline
 
