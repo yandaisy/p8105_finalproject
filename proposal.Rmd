@@ -35,7 +35,7 @@ New York:
 * Guttmacher Institute: https://data.guttmacher.org/states?state=NY&topics=65+66 
 * NY State Department of Health: https://www.health.ny.gov/statistics/vital_statistics/2019/
 
-Georgia:
+Mississippi:
 
 * Guttmacher Institute: https://data.guttmacher.org/states/table?state=GA&topics=65+66&dataset=data 
 
