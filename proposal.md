@@ -82,8 +82,8 @@ We plan to show:
 
 *Coding challenges*
 
-We may face potential challenges in analyzing the data because theey are
-group level data.
+We may face potential challenges in analyzing the data because they are
+in group level data.
 
 ### Planned Timeline
 
