@@ -80,7 +80,7 @@ We plan to show:
   Mississippi
 - Interactive mapping of abortion rate over time
 
-*Coding challengees*
+*Coding challenges*
 
 We may face potential challenges in analyzing the data because theey are
 group level data.
