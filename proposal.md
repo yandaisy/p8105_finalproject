@@ -40,7 +40,7 @@ policies and trends relating to abortion access and number of abortions.
 
 ### Intended Final Products
 
-Our final project will results in the following:
+Our final project will result in the following:
 
 - Graphs/dashboards depicting the results of our analysis
 - Report explaining our methodology and findings
