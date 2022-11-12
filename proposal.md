@@ -4,7 +4,7 @@ Ayako Sekiya (as6445), Daisy Yan (dxy2101), Elaine Chen (yc4017),
 Kasturi Bhamidipati (kb3246), Maisie Sun (ms6360)
 2022-11-12
 
-## Abortion trends in New York and Georgia (2016-2020): A Comparative Analysis
+## Abortion trends in New York and Mississippi (2017-2020): A Comparative Analysis
 
 ### Motivation
 
@@ -21,14 +21,22 @@ abortion trends in the country over time. We can analyze these trends to
 understand the implications of policy change in the country with respect
 to reproductive rights.
 
-Our period of interest is from 2016 to 2020. We will be assessing trends
+Our period of interest is from 2017 to 2020. We will be assessing trends
 in abortion rates leading up to the COVID-19 pandemic, where several
-abortion clinics closed and people were inclined to stay at home,
+abortion clinics closed and people were encouraged to stay at home,
 underestimating the demand for abortions from 2020 and onwards.
 
-Our areas of interest are New York and Georgia. Both states have
+Our areas of interest are New York and Mississippi. Both states have
 significantly different political alignments and subsequently different
 policies and trends relating to abortion access and number of abortions.
+
+### Potential Research Questions
+
+- Has abortion rate changed over time (2017 to 2020)?
+- What does the distribution of abortion rates among counties within New
+  York and Mississippi look like?
+- Do abortion rates differ between New York and Mississippi, accounting
+  for age, race/ethnicity, abortion method, and insurance plan?
 
 ### Intended Final Products
 
@@ -41,19 +49,41 @@ Our final project will results in the following:
 
 ### Anticipated Data Sources
 
-New York:
-
-- Guttmacher Institute:
-  <https://data.guttmacher.org/states?state=NY&topics=65+66>
-- NY State Department of Health:
-  <https://www.health.ny.gov/statistics/vital_statistics/2019/>
-
-Georgia:
-
-- Guttmacher Institute:
-  <https://data.guttmacher.org/states/table?state=GA&topics=65+66&dataset=data>
+We will be getting data from the Guttmacher Institute:
+<https://data.guttmacher.org/states/table?state=NY+MS&topics=65+66+203+205+152+151+109+110+111+157&dataset=data>
 
 ### Planned Analyses / Visualizations / Coding Challenges
+
+*Explanatory Analysis*
+
+We plan to calculate:
+
+- Rate of abortion per 1000 women in New York and Mississippi across 4
+  years (2017-2020)
+- Rate of abortion per 1000 women by age in New York and Mississippi
+- Rate of abortion per 1000 women by race/ethnicity in New York and
+  Mississippi
+- Rate of abortion per 1000 women by insurance plan in New York and
+  Mississippi
+
+Our outcome of interest is percent change in abortion rate over time.
+Potential confounders are race/ethnicity, year, methods (induced vs
+spontaneous), age group, and SES/income/insurance plan.
+
+*Visualizations*
+
+We plan to show:
+
+- Interactive mapping on abortion laws by state throughout time
+  (2017-2020)
+- Bar graph during exploratory analysis when comparing New York to
+  Mississippi
+- Interactive mapping of abortion rate over time
+
+*Coding challengees*
+
+We may face potential challenges in analyzing the data because theey are
+group level data.
 
 ### Planned Timeline
 
