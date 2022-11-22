@@ -76,6 +76,3 @@ We may face potential challenges in analyzing the data because they are in group
 | Submit peer assessment                | Dec 10         |
 | Prep for in-class presentations       | Dec 12         |
 | In-class presentations                | Dec 15         |
-
-check commit
-
