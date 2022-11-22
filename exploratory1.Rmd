@@ -11,6 +11,10 @@ library(tidyverse)
 library(ggridges)
 library(patchwork)
 library(readxl)
+library(rvest)
+library(httr)
+library(dplyr)
+
 knitr::opts_chunk$set(
 	echo = TRUE,
 	warning = FALSE,
@@ -29,4 +33,47 @@ scale_fill_discrete = scale_fill_viridis_d
 ```
 
 Get the data
+
+```{r data_import_age}
+url = "https://www.health.ny.gov/statistics/vital_statistics/2019/table21.htm"
+
+induced_abortion = 
+  read_html(url) %>%
+  html_table(header = FALSE) %>%
+  first() %>%
+  janitor::clean_names()
+
+```
+
+data cleaning
+
+```{r data_cleaning_age}
+clean_age = 
+  induced_abortion %>%
+  select(1:8) %>%
+  purrr::set_names(c("county", "total", "<20", "20_24", "25_29", "30_34", "35_39", "40+")) %>%
+  slice(6:11) %>%
+  rename(borough = county) %>%
+  mutate(
+    borough = str_replace(borough, "Kings", "Brooklyn"),
+    borough = str_replace(borough, "New York City", "New_York_City"),
+    borough = str_replace(borough, "New York", "Manhattan"),
+    borough = str_replace(borough, "Richmond", "Staten_Island")
+    )
+
+```
+
+ggplot: induced abortion vs maternal age
+
+```{r viz_age}
+abortion_age_plot = 
+  clean_age %>%
+  select(-total)
+  pivot_longer(
+    "<20":"40+",
+    
+  )
+
+
+```
 
