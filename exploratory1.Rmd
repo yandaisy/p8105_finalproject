@@ -51,15 +51,24 @@ data cleaning
 clean_age = 
   induced_abortion %>%
   select(1:8) %>%
-  purrr::set_names(c("county", "total", "<20", "20_24", "25_29", "30_34", "35_39", "40+")) %>%
+  purrr::set_names(c("county", "total", "age_less_20", "age_20_24", "age_25_29", "age_30_34", "age_35_39", "age_plus_40")) %>%
   slice(6:11) %>%
   rename(borough = county) %>%
   mutate(
     borough = str_replace(borough, "Kings", "Brooklyn"),
     borough = str_replace(borough, "New York City", "New_York_City"),
     borough = str_replace(borough, "New York", "Manhattan"),
-    borough = str_replace(borough, "Richmond", "Staten_Island")
-    )
+    borough = str_replace(borough, "Richmond", "Staten_Island"),
+    total = str_replace(total, ",", ""),
+    age_less_20 = str_replace(age_less_20, ",", ""),
+    age_20_24 = str_replace(age_20_24, ",", ""),
+    age_25_29 = str_replace(age_25_29, ",", ""),
+    age_30_34 = str_replace(age_30_34, ",", ""),
+    age_35_39 = str_replace(age_35_39, ",", ""),
+    age_plus_40 = str_replace(age_plus_40, ",", "")
+    ) %>%
+  mutate_at(c("total", "age_less_20", "age_20_24", "age_25_29", "age_30_34", "age_35_39", "age_plus_40"), as.numeric)
+  
 
 ```
 
@@ -68,11 +77,21 @@ ggplot: induced abortion vs maternal age
 ```{r viz_age}
 abortion_age_plot = 
   clean_age %>%
-  select(-total)
+  select(-total) %>%
+  slice(-1) %>%
   pivot_longer(
-    "<20":"40+",
-    
-  )
+    age_less_20:age_plus_40,
+    names_to = "age", 
+    values_to = "abortion"
+  ) %>%
+  ggplot(aes(x = age, y = abortion, fill = borough)) + 
+  geom_bar(stat = "identity", position = position_dodge()) +
+  geom_line(clean_age, )
+
+  scale_y_continuous(
+    breaks = c(900, 1000, 111), 
+    labels = c("-15º C", "0", "15"))
+abortion_age_plot
 
 
 ```
