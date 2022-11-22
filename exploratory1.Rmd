@@ -75,6 +75,16 @@ clean_age =
 ggplot: induced abortion vs maternal age
 
 ```{r viz_age}
+total_abortion_age = 
+  clean_age %>%
+  slice_head(n = 1) %>%
+  select(-total) %>%
+  pivot_longer(
+    age_less_20:age_plus_40,
+    names_to = "age", 
+    values_to = "abortion"
+  )
+
 abortion_age_plot = 
   clean_age %>%
   select(-total) %>%
@@ -86,13 +96,14 @@ abortion_age_plot =
   ) %>%
   ggplot(aes(x = age, y = abortion, fill = borough)) + 
   geom_bar(stat = "identity", position = position_dodge()) +
-  geom_line(clean_age, )
+  geom_point(data = total_abortion_age) +
+  labs(
+    title = "Number of Induced Abortions by Woman's Age and Borough, 2019",
+    x = "Woman's age categories",
+    y = "Number of Induced Abortions"
+  )
 
-  scale_y_continuous(
-    breaks = c(900, 1000, 111), 
-    labels = c("-15º C", "0", "15"))
-abortion_age_plot
-
+ggsave("results/abortion_age.pdf", abortion_age_plot, width = 10, height = 5)
 
 ```
 
