@@ -121,11 +121,7 @@ abortion_age_plot =
   )
 
 ggsave("results/abortion_age.pdf", abortion_age_plot, width = 10, height = 5)
-<<<<<<< HEAD
-```
-=======
 
 ggsave("results/abortion_age_wtotal.pdf", abortion_age_wtotal_plot, width = 10, height = 5)
->>>>>>> d666bd8c06732f64be2c061ccecf84805913f1d8
 
 ```
