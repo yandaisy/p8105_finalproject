@@ -32,7 +32,7 @@ scale_fill_discrete = scale_fill_viridis_d
 
 ```
 
-Get the data
+Get the data for age
 
 ```{r data_import_age}
 url = "https://www.health.ny.gov/statistics/vital_statistics/2019/table21.htm"
@@ -45,7 +45,7 @@ induced_abortion =
 
 ```
 
-data cleaning
+data cleaning for age
 
 ```{r data_cleaning_age}
 clean_age = 
@@ -71,6 +71,25 @@ clean_age =
   
 
 ```
+
+ggplot: induced abortion in boroughs
+
+```{r}
+total_abortion = 
+  clean_age %>%
+  slice(-1) %>%
+  ggplot((aes(x = borough, y = total))) + 
+  geom_bar(stat = "identity", position = position_dodge()) + 
+  labs(
+    title = "Number of Induced Abortions by Borough, 2019",
+    x = "New York City Borough",
+    y = "Number of Induced Abortions"
+  )
+
+ggsave("results/abortion_total.pdf", total_abortion, width = 10, height = 5)
+
+```
+
 
 ggplot: induced abortion vs maternal age
 
