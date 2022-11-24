@@ -419,7 +419,6 @@ abortion_data =
 
 write.csv(abortion_data, "data/abortion_data.csv", row.names = FALSE)
 
-
 ```
 
 
