@@ -13,6 +13,14 @@ library(readxl)
 library(rvest)
 library(httr)
 library(dplyr)
+library(leaflet)
+
+library(tigris)
+library(sp)
+library(ggmap)
+library(maptools)
+library(broom)
+library(rgdal)
 
 knitr::opts_chunk$set(
 	echo = TRUE,
@@ -35,9 +43,58 @@ scale_fill_discrete = scale_fill_viridis_d
 
 Get the data
 
-```{r data_import_finance}
+```{r data_import}
 abortion_final = read_csv(file = "./data/abortion_data.csv") %>%
     janitor::clean_names()
+```
+
+```{r}
+library(rgeos)
+library(maptools)
+library(geojsonio)
+library(ggplot2)
+
+# this is the geojson of the NYC community districts
+URL <- "http://services5.arcgis.com/GfwWNkhOj9bNBqoJ/arcgis/rest/services/nycd/FeatureServer/0/query?where=1=1&outFields=*&outSR=4326&f=geojson"
+fil <- "nyc_community_districts.geojson"
+if (!file.exists(fil)) download.file(URL, fil)
+
+nyc_districts <- geojson_read(fil, what="sp")
+
+# the @data slot of nyc_districts has 2 fields. BoroCD is the district #
+nyc_districts_map <- fortify(nyc_districts, region="BoroCD")
+
+# let's see which id is what
+mids <- cbind.data.frame(as.data.frame(gCentroid(nyc_districts, byid=TRUE)), 
+                         id=nyc_districts$BoroCD)
+
+gg <- ggplot()
+gg <- gg + geom_map(data=nyc_districts_map, map=nyc_districts_map,
+                    aes(x=long, y=lat, map_id=id),
+                    color="#2b2b2b", size=0.15, fill=NA)
+gg <- gg + geom_text(data=mids, aes(x=x, y=y, label=id), size=2)
+gg <- gg + coord_map()
+gg <- gg + ggthemes::theme_map()
+gg
+
+```
+
+```{r}
+leaflet() %>%
+  addTiles() %>%
+  setView(-74.00, 40.71, zoom = 10) %>%
+  addProviderTiles("CartoDB.Positron") %>%
+  addMarkers(lat = 40.71, lng = -74, popup = "Manhattan") %>%
+  addMarkers(lat = 40.83, lng = -73.87, popup = "Bronx") %>%
+  addMarkers(lat = 40.73, lng = -73.79, popup = "Queen") %>%
+  addMarkers(lat = 40.58, lng = -74.15, popup = "Staten Island") %>%
+  addMarkers(lat = 40.68, lng = -73.94, popup = "Brooklyn")
+
+nyc_tracts <- county_subdivisions(state = '36', county = c('061','047','081','005','085'))
+
+summary(nyc_tracts)
+plot(nyc_tracts)
+
 
 ```
 
