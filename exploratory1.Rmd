@@ -13,6 +13,7 @@ library(janitor)
 library(ggridges)
 library(patchwork)
 library(readxl)
+library("writexl")
 library(rvest)
 library(httr)
 library(dplyr)
@@ -415,7 +416,8 @@ abortion_data =
   t() %>%
   as.data.frame() %>%
   purrr::set_names(c("New_York_City", "Bronx", "Brooklyn", "Manhattan", "Queens", "Staten_Island")) %>%
-  slice(-1)
+  slice(-1) %>%
+  tibble::rownames_to_column()
 
 write.csv(abortion_data, "data/abortion_data.csv", row.names = FALSE)
 
