@@ -1,0 +1,128 @@
+---
+title: "Abortion by Financial Plam"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(data.table)
+library(janitor)
+library(ggridges)
+library(patchwork)
+library(readxl)
+library("writexl")
+library(rvest)
+library(httr)
+library(dplyr)
+
+knitr::opts_chunk$set(
+	echo = TRUE,
+	warning = FALSE,
+	fig.width = 8, 
+  fig.height = 6,
+  out.width = "90%"
+)
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+
+```
+
+## Financial Plans
+
+Get the data
+
+```{r data_import_finance}
+url = "https://www.health.ny.gov/statistics/vital_statistics/2019/table24.htm"
+
+induced_abortion_finance = 
+  read_html(url) %>%
+  html_table(header = FALSE) %>%
+  first() %>%
+  janitor::clean_names()
+
+```
+
+data cleaning
+
+```{r data_cleaning_finance}
+clean_finance = 
+  induced_abortion_finance %>%
+  select(1:8) %>%
+  purrr::set_names(c("borough", "total", "Medicaid", "HMO", "Other_Insurance", "Self_Pay", "Multiple_Payor", "Not_Stated")) %>%
+  slice(6:11) %>%
+  mutate(
+    borough = str_replace(borough, "Kings", "Brooklyn"),
+    borough = str_replace(borough, "New York City", "New_York_City"),
+    borough = str_replace(borough, "New York", "Manhattan"),
+    borough = str_replace(borough, "Richmond", "Staten_Island"),
+    total = str_replace(total, ",", ""),
+    Medicaid = str_replace(Medicaid, ",", ""),
+    HMO = str_replace(HMO, ",", ""),
+    Other_Insurance = str_replace(Other_Insurance, ",", ""),
+    Self_Pay = str_replace(Self_Pay, ",", ""),
+    Multiple_Payor = str_replace(Multiple_Payor, ",", ""),
+    Not_Stated = str_replace(Not_Stated, ",", "")
+    ) %>%
+  mutate_at(c("total", "Medicaid", "HMO", "Other_Insurance", "Self_Pay", "Multiple_Payor", "Not_Stated"), as.numeric)
+  
+
+```
+
+ggplot: induced abortion vs financial plans
+
+```{r viz_finance}
+total_abortion_finance = 
+  clean_finance %>%
+  slice_head(n = 1) %>%
+  select(-total) %>%
+  pivot_longer(
+    Medicaid:Not_Stated,
+    names_to = "finance_plan", 
+    values_to = "abortion"
+  )
+
+abortion_finance_plot = 
+  clean_finance %>%
+  select(-total) %>%
+  slice(-1) %>%
+  pivot_longer(
+    Medicaid:Not_Stated,
+    names_to = "finance_plan", 
+    values_to = "abortion"
+  ) %>%
+  ggplot(aes(x = finance_plan, y = abortion, fill = borough)) + 
+  geom_bar(stat = "identity", position = position_dodge()) +
+  labs(
+    title = "Number of Induced Abortions by Woman's Finance Plan and Borough, 2019",
+    x = "Woman's finance plan",
+    y = "Number of Induced Abortions"
+  )
+
+ggsave("results/abortion_finance_plan.pdf", abortion_finance_plot, width = 10, height = 5)
+
+abortion_finance_total = 
+  clean_finance %>%
+  select(-total) %>%
+  slice(-1) %>%
+  pivot_longer(
+    Medicaid:Not_Stated,
+    names_to = "finance_plan", 
+    values_to = "abortion"
+  ) %>%
+  ggplot(aes(x = finance_plan, y = abortion, fill = borough)) + 
+  geom_bar(stat = "identity", position = position_dodge()) +
+  geom_point(data = total_abortion_finance) +
+  labs(
+    title = "Number of Induced Abortions by Woman's Finance Plan and Borough, 2019",
+    x = "Woman's finance plan",
+    y = "Number of Induced Abortions"
+  )
+
+ggsave("results/abortion_finance_total.pdf", abortion_finance_total, width = 10, height = 5)
+```
