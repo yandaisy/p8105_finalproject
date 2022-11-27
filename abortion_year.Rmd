@@ -1,30 +1,262 @@
 ---
 title: "Abortion by Year"
-author: "Ayako Sekiya"
-date: "2022-11-27"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(data.table)
+library(janitor)
+library(ggridges)
+library(patchwork)
+library(readxl)
+library("writexl")
+library(rvest)
+library(httr)
+library(dplyr)
+library(plotly)
+
+knitr::opts_chunk$set(
+	echo = TRUE,
+	warning = FALSE,
+	fig.width = 8, 
+  fig.height = 6,
+  out.width = "90%"
+)
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+
 ```
 
-## R Markdown
+## Induced Abortions in Years (2019)
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+```{r data_import_2019}
+url = "https://www.health.ny.gov/statistics/vital_statistics/2019/table23.htm"
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+induced_abortion_2019 = 
+  read_html(url) %>%
+  html_table(header = FALSE) %>%
+  first() %>%
+  janitor::clean_names()
 ```
 
-## Including Plots
+data cleaning
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r data_cleaning_2019, echo = FALSE}
+clean_2019 = 
+  induced_abortion_2019 %>%
+  select(1:2) %>%
+  purrr::set_names(c("borough", "total")) %>%
+  slice(6:11) %>%
+  mutate(
+    borough = str_replace(borough, "Kings", "Brooklyn"),
+    borough = str_replace(borough, "New York City", "New_York_City"),
+    borough = str_replace(borough, "New York", "Manhattan"),
+    borough = str_replace(borough, "Richmond", "Staten_Island"),
+    total = str_replace(total, ",", ""),
+    year="2019"
+    ) %>%
+  mutate_at(c("total", "year"), as.numeric)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+## Induced Abortions in Years (2018)
+```{r data_import_2018}
+url = "https://www.health.ny.gov/statistics/vital_statistics/2018/table21.htm"
+
+induced_abortion_2018 = 
+  read_html(url) %>%
+  html_table(header = FALSE) %>%
+  first() %>%
+  janitor::clean_names()
+
+```
+
+data cleaning
+
+```{r data_cleaning_2018, echo = FALSE}
+clean_2018 = 
+  induced_abortion_2018 %>%
+  select(1:2) %>%
+  purrr::set_names(c("borough", "total")) %>%
+  slice(6:11) %>%
+  mutate(
+    borough = str_replace(borough, "Kings", "Brooklyn"),
+    borough = str_replace(borough, "New York City", "New_York_City"),
+    borough = str_replace(borough, "New York", "Manhattan"),
+    borough = str_replace(borough, "Richmond", "Staten_Island"),
+    total = str_replace(total, ",", ""),
+    year="2018"
+    ) %>%
+  mutate_at(c("total", "year"), as.numeric)
+```
+
+## Induced Abortions in Years (2017)
+```{r data_import_2017}
+url = "https://www.health.ny.gov/statistics/vital_statistics/2018/table21.htm"
+
+induced_abortion_2017 = 
+  read_html(url) %>%
+  html_table(header = FALSE) %>%
+  first() %>%
+  janitor::clean_names()
+
+```
+
+data cleaning
+
+```{r data_cleaning_2017, echo = FALSE}
+clean_2017 = 
+  induced_abortion_2017 %>%
+  select(1:2) %>%
+  purrr::set_names(c("borough", "total")) %>%
+  slice(6:11) %>%
+  mutate(
+    borough = str_replace(borough, "Kings", "Brooklyn"),
+    borough = str_replace(borough, "New York City", "New_York_City"),
+    borough = str_replace(borough, "New York", "Manhattan"),
+    borough = str_replace(borough, "Richmond", "Staten_Island"),
+    total = str_replace(total, ",", ""),
+    year="2017"
+    ) %>%
+  mutate_at(c("total", "year"), as.numeric)
+```
+
+## Induced Abortions in Years (2016)
+```{r data_import_2016}
+url = "https://www.health.ny.gov/statistics/vital_statistics/2016/table21.htm"
+
+induced_abortion_2016 = 
+  read_html(url) %>%
+  html_table(header = FALSE) %>%
+  first() %>%
+  janitor::clean_names()
+
+```
+
+data cleaning
+
+```{r data_cleaning_2016, echo = FALSE}
+clean_2016 = 
+  induced_abortion_2016 %>%
+  select(1:2) %>%
+  purrr::set_names(c("borough", "total")) %>%
+  slice(6:11) %>%
+  mutate(
+    borough = str_replace(borough, "Kings", "Brooklyn"),
+    borough = str_replace(borough, "New York City", "New_York_City"),
+    borough = str_replace(borough, "New York", "Manhattan"),
+    borough = str_replace(borough, "Richmond", "Staten_Island"),
+    total = str_replace(total, ",", ""),
+    year="2016"
+    ) %>%
+  mutate_at(c("total", "year"), as.numeric)
+```
+
+## Induced Abortions in Years (2015)
+```{r data_import_2015}
+url = "https://www.health.ny.gov/statistics/vital_statistics/2015/table21.htm"
+
+induced_abortion_2015 = 
+  read_html(url) %>%
+  html_table(header = FALSE) %>%
+  first() %>%
+  janitor::clean_names()
+
+```
+
+data cleaning
+
+```{r data_cleaning_2015, echo = FALSE}
+clean_2015 = 
+  induced_abortion_2015 %>%
+  select(1:2) %>%
+  purrr::set_names(c("borough", "total")) %>%
+  slice(6:11) %>%
+  mutate(
+    borough = str_replace(borough, "Kings", "Brooklyn"),
+    borough = str_replace(borough, "New York City", "New_York_City"),
+    borough = str_replace(borough, "New York", "Manhattan"),
+    borough = str_replace(borough, "Richmond", "Staten_Island"),
+    total = str_replace(total, ",", ""),
+    year="2015"
+    ) %>%
+  mutate_at(c("total", "year"), as.numeric)
+```
+
+## Induced Abortions in Years (2014)
+```{r data_import_2014}
+url = "https://www.health.ny.gov/statistics/vital_statistics/2014/table21.htm"
+
+induced_abortion_2014 = 
+  read_html(url) %>%
+  html_table(header = FALSE) %>%
+  first() %>%
+  janitor::clean_names()
+
+```
+
+data cleaning
+
+```{r data_cleaning_2014, echo = FALSE}
+clean_2014 = 
+  induced_abortion_2014 %>%
+  select(1:2) %>%
+  purrr::set_names(c("borough", "total")) %>%
+  slice(6:11) %>%
+  mutate(
+    borough = str_replace(borough, "Kings", "Brooklyn"),
+    borough = str_replace(borough, "New York City", "New_York_City"),
+    borough = str_replace(borough, "New York", "Manhattan"),
+    borough = str_replace(borough, "Richmond", "Staten_Island"),
+    total = str_replace(total, ",", ""),
+    year="2014"
+    ) %>%
+  mutate_at(c("total", "year"), as.numeric)
+```
+
+Merge all datasets
+
+```{r join}
+year_final = 
+rbind(clean_2019, clean_2018, clean_2017, clean_2016, clean_2015, clean_2014, by=c("borough", "total", "year")) %>% 
+select(year, everything()) %>% 
+filter(!year=="year") %>% 
+filter(!borough=="New_York_City") %>% 
+mutate_at(c("total", "year"), as.numeric)
+```
+
+```{r join}
+year_total = 
+rbind(clean_2019, clean_2018, clean_2017, clean_2016, clean_2015, clean_2014, by=c("borough", "total", "year")) %>% 
+select(year, everything()) %>% 
+filter(!year=="year") %>% 
+filter(borough=="New_York_City") %>%
+mutate_at(c("total", "year"), as.numeric)
+```
+
+#### Line chart by Year and Borough
+
+```{r}
+plot_borough_year=year_final %>% 
+  mutate(borough = fct_reorder(borough, total)) %>% 
+plot_ly(y = ~total, x=~year, color = ~borough, type = "scatter", mode="line", colors = "viridis")
+
+plot_borough_year
+```
+
+#### Line chart by Year for Total
+
+```{r}
+plot_borough_total=year_total %>% 
+mutate(borough = fct_reorder(borough, total)) %>% 
+plot_ly(y = ~total, x=~year, color = ~borough, type = "scatter", mode="line", colors = "viridis") 
+
+plot_borough_total
+```
+
