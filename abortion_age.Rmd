@@ -70,7 +70,6 @@ clean_age =
     ) %>%
   mutate_at(c("total", "age_less_20", "age_20_24", "age_25_29", "age_30_34", "age_35_39", "age_plus_40"), as.numeric)
   
-
 ```
 
 ggplot: induced abortion in boroughs
@@ -79,6 +78,7 @@ ggplot: induced abortion in boroughs
 total_abortion = 
   clean_age %>%
   slice(-1) %>%
+  plot_ly(x = ~borough, y = ~total, type = "bar", colors = "viridis")
   ggplot((aes(x = borough, y = total))) + 
   geom_bar(stat = "identity", position = position_dodge()) + 
   labs(
