@@ -37,7 +37,7 @@ scale_fill_discrete = scale_fill_viridis_d
 ## Induced Abortions in Years (2019)
 
 ```{r data_import_2019}
-url = "https://www.health.ny.gov/statistics/vital_statistics/2019/table23.htm"
+url = "https://www.health.ny.gov/statistics/vital_statistics/2019/table22.htm"
 
 induced_abortion_2019 = 
   read_html(url) %>%
@@ -53,11 +53,10 @@ clean_2019 =
   induced_abortion_2019 %>%
   select(1:2) %>%
   purrr::set_names(c("borough", "total")) %>%
-  slice(6:11) %>%
+  slice(4, 6:11) %>%
   mutate(
     borough = str_replace(borough, "Kings", "Brooklyn"),
-    borough = str_replace(borough, "New York City", "New_York_City"),
-    borough = str_replace(borough, "New York", "Manhattan"),
+    borough = ifelse(as.character(borough) == "New York", "Manhattan", as.character(borough)),
     borough = str_replace(borough, "Richmond", "Staten_Island"),
     total = str_replace(total, ",", ""),
     year="2019"
@@ -67,7 +66,7 @@ clean_2019 =
 
 ## Induced Abortions in Years (2018)
 ```{r data_import_2018}
-url = "https://www.health.ny.gov/statistics/vital_statistics/2018/table21.htm"
+url = "https://www.health.ny.gov/statistics/vital_statistics/2018/table22.htm"
 
 induced_abortion_2018 = 
   read_html(url) %>%
@@ -84,11 +83,10 @@ clean_2018 =
   induced_abortion_2018 %>%
   select(1:2) %>%
   purrr::set_names(c("borough", "total")) %>%
-  slice(6:11) %>%
+  slice(4, 6:11) %>%
   mutate(
     borough = str_replace(borough, "Kings", "Brooklyn"),
-    borough = str_replace(borough, "New York City", "New_York_City"),
-    borough = str_replace(borough, "New York", "Manhattan"),
+    borough = ifelse(as.character(borough) == "New York", "Manhattan", as.character(borough)),
     borough = str_replace(borough, "Richmond", "Staten_Island"),
     total = str_replace(total, ",", ""),
     year="2018"
@@ -98,7 +96,7 @@ clean_2018 =
 
 ## Induced Abortions in Years (2017)
 ```{r data_import_2017}
-url = "https://www.health.ny.gov/statistics/vital_statistics/2018/table21.htm"
+url = "https://www.health.ny.gov/statistics/vital_statistics/2018/table22.htm"
 
 induced_abortion_2017 = 
   read_html(url) %>%
@@ -115,11 +113,10 @@ clean_2017 =
   induced_abortion_2017 %>%
   select(1:2) %>%
   purrr::set_names(c("borough", "total")) %>%
-  slice(6:11) %>%
+  slice(4, 6:11) %>%
   mutate(
     borough = str_replace(borough, "Kings", "Brooklyn"),
-    borough = str_replace(borough, "New York City", "New_York_City"),
-    borough = str_replace(borough, "New York", "Manhattan"),
+    borough = ifelse(as.character(borough) == "New York", "Manhattan", as.character(borough)),
     borough = str_replace(borough, "Richmond", "Staten_Island"),
     total = str_replace(total, ",", ""),
     year="2017"
@@ -129,7 +126,7 @@ clean_2017 =
 
 ## Induced Abortions in Years (2016)
 ```{r data_import_2016}
-url = "https://www.health.ny.gov/statistics/vital_statistics/2016/table21.htm"
+url = "https://www.health.ny.gov/statistics/vital_statistics/2016/table22.htm"
 
 induced_abortion_2016 = 
   read_html(url) %>%
@@ -146,11 +143,10 @@ clean_2016 =
   induced_abortion_2016 %>%
   select(1:2) %>%
   purrr::set_names(c("borough", "total")) %>%
-  slice(6:11) %>%
+  slice(4, 6:11) %>%
   mutate(
     borough = str_replace(borough, "Kings", "Brooklyn"),
-    borough = str_replace(borough, "New York City", "New_York_City"),
-    borough = str_replace(borough, "New York", "Manhattan"),
+    borough = ifelse(as.character(borough) == "New York", "Manhattan", as.character(borough)),
     borough = str_replace(borough, "Richmond", "Staten_Island"),
     total = str_replace(total, ",", ""),
     year="2016"
@@ -160,7 +156,7 @@ clean_2016 =
 
 ## Induced Abortions in Years (2015)
 ```{r data_import_2015}
-url = "https://www.health.ny.gov/statistics/vital_statistics/2015/table21.htm"
+url = "https://www.health.ny.gov/statistics/vital_statistics/2015/table22.htm"
 
 induced_abortion_2015 = 
   read_html(url) %>%
@@ -177,11 +173,10 @@ clean_2015 =
   induced_abortion_2015 %>%
   select(1:2) %>%
   purrr::set_names(c("borough", "total")) %>%
-  slice(6:11) %>%
+  slice(4, 6:11) %>%
   mutate(
     borough = str_replace(borough, "Kings", "Brooklyn"),
-    borough = str_replace(borough, "New York City", "New_York_City"),
-    borough = str_replace(borough, "New York", "Manhattan"),
+    borough = ifelse(as.character(borough) == "New York", "Manhattan", as.character(borough)),
     borough = str_replace(borough, "Richmond", "Staten_Island"),
     total = str_replace(total, ",", ""),
     year="2015"
@@ -191,7 +186,7 @@ clean_2015 =
 
 ## Induced Abortions in Years (2014)
 ```{r data_import_2014}
-url = "https://www.health.ny.gov/statistics/vital_statistics/2014/table21.htm"
+url = "https://www.health.ny.gov/statistics/vital_statistics/2014/table22.htm"
 
 induced_abortion_2014 = 
   read_html(url) %>%
@@ -208,11 +203,10 @@ clean_2014 =
   induced_abortion_2014 %>%
   select(1:2) %>%
   purrr::set_names(c("borough", "total")) %>%
-  slice(6:11) %>%
+  slice(4, 6:11) %>%
   mutate(
     borough = str_replace(borough, "Kings", "Brooklyn"),
-    borough = str_replace(borough, "New York City", "New_York_City"),
-    borough = str_replace(borough, "New York", "Manhattan"),
+    borough = ifelse(as.character(borough) == "New York", "Manhattan", as.character(borough)),
     borough = str_replace(borough, "Richmond", "Staten_Island"),
     total = str_replace(total, ",", ""),
     year="2014"
@@ -227,16 +221,6 @@ year_final =
 rbind(clean_2019, clean_2018, clean_2017, clean_2016, clean_2015, clean_2014, by=c("borough", "total", "year")) %>% 
 select(year, everything()) %>% 
 filter(!year=="year") %>% 
-filter(!borough=="New_York_City") %>% 
-mutate_at(c("total", "year"), as.numeric)
-```
-
-```{r join}
-year_total = 
-rbind(clean_2019, clean_2018, clean_2017, clean_2016, clean_2015, clean_2014, by=c("borough", "total", "year")) %>% 
-select(year, everything()) %>% 
-filter(!year=="year") %>% 
-filter(borough=="New_York_City") %>%
 mutate_at(c("total", "year"), as.numeric)
 ```
 
@@ -246,19 +230,7 @@ mutate_at(c("total", "year"), as.numeric)
 plot_borough_year=year_final %>% 
   mutate(borough = fct_reorder(borough, total)) %>% 
 plot_ly(y = ~total, x=~year, color = ~borough, type = "scatter", mode="line", colors = "viridis") %>% 
-   layout(title = 'Induced Abortions Year by Borough')
+   layout(title = 'Induced Abortions Year by Borough', yaxis = list(title = 'Number of Induced Abortions per 1,000 Live Births'))
 
 plot_borough_year
 ```
-
-#### Line chart by Year for Total
-
-```{r}
-plot_borough_total=year_total %>% 
-mutate(borough = fct_reorder(borough, total)) %>% 
-plot_ly(y = ~total, x=~year, color = ~borough, type = "scatter", mode="line", colors = "viridis") %>% 
-   layout(title = 'Induced Abortions Year for Total')
-
-plot_borough_total
-```
-
