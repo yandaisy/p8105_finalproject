@@ -15,6 +15,7 @@ library("writexl")
 library(rvest)
 library(httr)
 library(dplyr)
+library(plotly)
 
 knitr::opts_chunk$set(
 	echo = TRUE,
@@ -39,9 +40,16 @@ Get the data
 
 ```{r data_import_finance}
 url = "https://www.health.ny.gov/statistics/vital_statistics/2019/table24.htm"
+url1 = "https://www.health.ny.gov/statistics/vital_statistics/2019/table13.htm"
 
 induced_abortion_finance = 
   read_html(url) %>%
+  html_table(header = FALSE) %>%
+  first() %>%
+  janitor::clean_names()
+
+live_birth_finance = 
+  read_html(url1) %>%
   html_table(header = FALSE) %>%
   first() %>%
   janitor::clean_names()
@@ -50,79 +58,71 @@ induced_abortion_finance =
 
 data cleaning
 
-```{r data_cleaning_finance}
-clean_finance = 
-  induced_abortion_finance %>%
-  select(1:8) %>%
-  purrr::set_names(c("borough", "total", "Medicaid", "HMO", "Other_Insurance", "Self_Pay", "Multiple_Payor", "Not_Stated")) %>%
-  slice(6:11) %>%
+```{r data_cleaning_livebirths}
+clean_lb_finance= live_birth_finance %>% 
+  select(-c(4,6:8)) %>%
+  purrr::set_names(c("borough", "total", "Medicaid", "Self_Pay", "Other_Insurance", "Not_Stated")) %>%
+  slice(4, 6:11) %>% 
   mutate(
     borough = str_replace(borough, "Kings", "Brooklyn"),
-    borough = str_replace(borough, "New York City", "New_York_City"),
-    borough = str_replace(borough, "New York", "Manhattan"),
+    borough = ifelse(as.character(borough) == "New York", "Manhattan", as.character(borough)),
     borough = str_replace(borough, "Richmond", "Staten_Island"),
     total = str_replace(total, ",", ""),
     Medicaid = str_replace(Medicaid, ",", ""),
-    HMO = str_replace(HMO, ",", ""),
     Other_Insurance = str_replace(Other_Insurance, ",", ""),
     Self_Pay = str_replace(Self_Pay, ",", ""),
-    Multiple_Payor = str_replace(Multiple_Payor, ",", ""),
     Not_Stated = str_replace(Not_Stated, ",", "")
     ) %>%
-  mutate_at(c("total", "Medicaid", "HMO", "Other_Insurance", "Self_Pay", "Multiple_Payor", "Not_Stated"), as.numeric)
-  
+  mutate_at(c("total", "Medicaid", "Self_Pay","Other_Insurance", "Not_Stated"), as.numeric)
+```
 
+
+```{r data_cleaning_abortions}
+clean_ia_finance=
+induced_abortion_finance %>%
+  select(c(1:3,5,6,8)) %>%
+  purrr::set_names(c("borough", "total", "Medicaid", "Other_Insurance", "Self_Pay", "Not_Stated")) %>%
+  slice(4, 6:11) %>%
+  mutate(
+    borough = str_replace(borough, "Kings", "Brooklyn"),
+    borough = ifelse(as.character(borough) == "New York", "Manhattan", as.character(borough)),
+    borough = str_replace(borough, "Richmond", "Staten_Island"),
+    total = str_replace(total, ",", ""),
+    Medicaid = str_replace(Medicaid, ",", ""),
+    Other_Insurance = str_replace(Other_Insurance, ",", ""),
+    Self_Pay = str_replace(Self_Pay, ",", ""),
+    Not_Stated = str_replace(Not_Stated, ",", "")
+    ) %>%
+  mutate_at(c("total", "Medicaid","Other_Insurance", "Self_Pay", "Not_Stated"), as.numeric)
+```
+
+
+```{r merge}
+merged_data=
+  full_join(clean_lb_finance,clean_ia_finance, by="borough") %>%
+  janitor::clean_names() %>%
+  mutate(
+    medicaid = (medicaid_x / medicaid_y)*1000,
+    self_pay = (self_pay_x / self_pay_y)*1000,
+    other_insurance = (other_insurance_x / other_insurance_y)*1000,
+    not_stated = (not_stated_x / not_stated_y)*1000,
+    total = (total_x / total_y)*1000) %>% 
+select(borough, medicaid, self_pay, other_insurance, not_stated, total)  
 ```
 
 ggplot: induced abortion vs financial plans
 
 ```{r viz_finance}
-total_abortion_finance = 
-  clean_finance %>%
-  slice_head(n = 1) %>%
-  select(-total) %>%
-  pivot_longer(
-    Medicaid:Not_Stated,
-    names_to = "finance_plan", 
-    values_to = "abortion"
-  )
-
 abortion_finance_plot = 
-  clean_finance %>%
-  select(-total) %>%
-  slice(-1) %>%
+  merged_data %>%
+  select(-total) %>% 
   pivot_longer(
-    Medicaid:Not_Stated,
+    medicaid:not_stated,
     names_to = "finance_plan", 
     values_to = "abortion"
-  ) %>%
-  ggplot(aes(x = finance_plan, y = abortion, fill = borough)) + 
-  geom_bar(stat = "identity", position = position_dodge()) +
-  labs(
-    title = "Number of Induced Abortions by Woman's Finance Plan and Borough, 2019",
-    x = "Woman's finance plan",
-    y = "Number of Induced Abortions"
-  )
+  ) %>% 
+  plot_ly(x = ~finance_plan, y = ~abortion, color = ~borough, type = "bar", colors = "viridis") %>% 
+  layout(title = 'Abortions in NYC by Financial Plan', yaxis = list(title = 'Number of Induced Abortions per 1,000 Live Births'))
 
-ggsave("results/abortion_finance_plan.pdf", abortion_finance_plot, width = 10, height = 5)
-
-abortion_finance_total = 
-  clean_finance %>%
-  select(-total) %>%
-  slice(-1) %>%
-  pivot_longer(
-    Medicaid:Not_Stated,
-    names_to = "finance_plan", 
-    values_to = "abortion"
-  ) %>%
-  ggplot(aes(x = finance_plan, y = abortion, fill = borough)) + 
-  geom_bar(stat = "identity", position = position_dodge()) +
-  geom_point(data = total_abortion_finance) +
-  labs(
-    title = "Number of Induced Abortions by Woman's Finance Plan and Borough, 2019",
-    x = "Woman's finance plan",
-    y = "Number of Induced Abortions"
-  )
-
-ggsave("results/abortion_finance_total.pdf", abortion_finance_total, width = 10, height = 5)
+abortion_finance_plot
 ```

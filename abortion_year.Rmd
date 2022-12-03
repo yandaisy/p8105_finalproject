@@ -245,7 +245,8 @@ mutate_at(c("total", "year"), as.numeric)
 ```{r}
 plot_borough_year=year_final %>% 
   mutate(borough = fct_reorder(borough, total)) %>% 
-plot_ly(y = ~total, x=~year, color = ~borough, type = "scatter", mode="line", colors = "viridis")
+plot_ly(y = ~total, x=~year, color = ~borough, type = "scatter", mode="line", colors = "viridis") %>% 
+   layout(title = 'Induced Abortions Year by Borough')
 
 plot_borough_year
 ```
@@ -255,7 +256,8 @@ plot_borough_year
 ```{r}
 plot_borough_total=year_total %>% 
 mutate(borough = fct_reorder(borough, total)) %>% 
-plot_ly(y = ~total, x=~year, color = ~borough, type = "scatter", mode="line", colors = "viridis") 
+plot_ly(y = ~total, x=~year, color = ~borough, type = "scatter", mode="line", colors = "viridis") %>% 
+   layout(title = 'Induced Abortions Year for Total')
 
 plot_borough_total
 ```
