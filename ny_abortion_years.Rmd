@@ -37,8 +37,8 @@ scale_fill_discrete = scale_fill_viridis_d
 ## Induced Abortions in Years (2019)
 
 ```{r data_import_2019}
-url = "https://www.health.ny.gov/statistics/vital_statistics/2019/table22.htm"
-url1= "https://www.health.ny.gov/statistics/vital_statistics/2019/table13.htm"
+url = "https://www.health.ny.gov/statistics/vital_statistics/2019/table21.htm"
+url1= "https://www.health.ny.gov/statistics/vital_statistics/2019/table07.htm"
 
 induced_abortion_2019 = 
   read_html(url) %>%
@@ -109,9 +109,19 @@ rename_lb_2019= clean_lb_2019 %>%
   summarize(total_rate= sum(total))
 ```
 
+#### Merging
+
+```{r}
+merged_2019=
+  full_join(rename_lb_2019,rename_ia_2019, by="borough") %>%
+  janitor::clean_names() %>%
+  mutate(total = (total_rate_y / total_rate_x)*1000) %>% 
+  select(total, year_x)
+```
+
 ## Induced Abortions in Years (2018)
 ```{r data_import_2018}
-url = "https://www.health.ny.gov/statistics/vital_statistics/2018/table22.htm"
+url = "https://www.health.ny.gov/statistics/vital_statistics/2018/table21.htm"
 url1 = "https://www.health.ny.gov/statistics/vital_statistics/2018/table07.htm"
 
 induced_abortion_2018 = 
@@ -187,10 +197,20 @@ rename_ia_2018= clean_ia_2018 %>%
   summarize(total_rate= sum(total))
 ```
 
+#### Merging
+
+```{r}
+merged_2018=
+  full_join(rename_lb_2018,rename_ia_2018, by="borough") %>%
+  janitor::clean_names() %>%
+  mutate(total = (total_rate_y / total_rate_x)*1000) %>% 
+  select(total, year_x)
+```
+
 ## Induced Abortions in Years (2017)
 ```{r data_import_2017}
-url = "https://www.health.ny.gov/statistics/vital_statistics/2017/table22.htm"
-url1= "https://www.health.ny.gov/statistics/vital_statistics/2017/table13.htm"
+url = "https://www.health.ny.gov/statistics/vital_statistics/2017/table21.htm"
+url1= "https://www.health.ny.gov/statistics/vital_statistics/2017/table07.htm"
 
 induced_abortion_2017 = 
   read_html(url) %>%
@@ -224,7 +244,7 @@ clean_lb_2017 =
   purrr::set_names(c("borough", "total")) %>%
   slice(14:70) %>% 
   mutate(total = str_replace(total, ",", ""),
-    year="2019"
+    year="2017"
     ) %>%
   mutate_at(c("total", "year"), as.numeric)
 ```
@@ -259,10 +279,21 @@ rename_ia_2017= clean_ia_2017 %>%
   summarize(total_rate= sum(total))
 ```
 
+#### Merging
+
+```{r}
+merged_2017=
+  full_join(rename_lb_2017,rename_ia_2017, by="borough") %>%
+  janitor::clean_names() %>%
+  mutate(total = (total_rate_y / total_rate_x)*1000) %>% 
+  select(total, year_x)
+```
+
 ## Induced Abortions in Years (2016)
+
 ```{r data_import_2016}
 url = "https://www.health.ny.gov/statistics/vital_statistics/2016/table21.htm"
-url1= "https://www.health.ny.gov/statistics/vital_statistics/2016/table13.htm"
+url1= "https://www.health.ny.gov/statistics/vital_statistics/2016/table07.htm"
 
 induced_abortion_2016= 
   read_html(url) %>%
@@ -331,6 +362,16 @@ rename_ia_2016= clean_ia_2016 %>%
   summarize(total_rate= sum(total))
 ```
 
+#### Merging
+
+```{r}
+merged_2016=
+  full_join(rename_lb_2016,rename_ia_2016, by="borough") %>%
+  janitor::clean_names() %>%
+  mutate(total = (total_rate_y / total_rate_x)*1000) %>% 
+  select(total, year_x)
+```
+
 ## Induced Abortions in Years (2015)
 ```{r data_import_2015}
 url = "https://www.health.ny.gov/statistics/vital_statistics/2015/table21.htm"
@@ -343,7 +384,7 @@ induced_abortion_2015 =
   janitor::clean_names()
 
 live_birth_2015 = 
-  read_html(url) %>%
+  read_html(url1) %>%
   html_table(header = FALSE) %>%
   first() %>%
   janitor::clean_names()
@@ -376,7 +417,7 @@ renaming counties into regions.
 ```{r rename live births}
 rename_lb_2015= clean_lb_2015 %>% 
   transform(borough = gsub(pattern = "Albany|Columbia|Fulton|Greene|Montgomery|Rensselaer|Saratoga|Schenectady|Schoharie|Warren|Washington", replacement = "Saratoga", borough)) %>%
-  transform(borough = gsub(pattern = "Franklin|Clinton|Essex/Hamilton|Hamilton/Essex", replacement = "Eastern Adirondacks", borough)) %>%
+  transform(borough = gsub(pattern = "Franklin|Clinton|Essex|Hamilton", replacement = "Eastern Adirondacks", borough)) %>%
   transform(borough = gsub(pattern = "Herkimer|Jefferson|Lewis|Oneida|Oswego|St Lawrence", replacement = "Western Adirondacks", borough)) %>%
   transform(borough = gsub(pattern = "Broome|Cayuga|Chenango|Cortland|Madison|Onondaga|Otsego|Tioga|Tompkins", replacement = "Central New York", borough)) %>% 
   transform(borough=gsub(pattern="Chemung|Genesee|Livingston|Monroe|Ontario|Schuyler|Seneca|Steuben|Wayne|Yates",replacement="Finger Lakes", borough)) %>% 
@@ -401,6 +442,16 @@ rename_ia_2015= clean_ia_2015 %>%
   summarize(total_rate= sum(total))
 ```
 
+#### Merging
+
+```{r}
+merged_2015=
+  full_join(rename_lb_2015,rename_ia_2015, by="borough") %>%
+  janitor::clean_names() %>%
+  mutate(total = (total_rate_y / total_rate_x)*1000) %>% 
+  select(total, year_x)
+```
+
 ## Induced Abortions in Years (2014)
 ```{r data_import_2014}
 url = "https://www.health.ny.gov/statistics/vital_statistics/2014/table21.htm"
@@ -413,7 +464,7 @@ induced_abortion_2014 =
   janitor::clean_names()
 
 live_birth_2014 = 
-  read_html(url) %>%
+  read_html(url1) %>%
   html_table(header = FALSE) %>%
   first() %>%
   janitor::clean_names()
@@ -451,7 +502,7 @@ renaming counties into regions.
 ```{r rename}
 rename_lb_2014= clean_lb_2014 %>% 
   transform(borough = gsub(pattern = "Albany|Columbia|Fulton|Greene|Montgomery|Rensselaer|Saratoga|Schenectady|Schoharie|Warren|Washington", replacement = "Saratoga", borough)) %>%
-  transform(borough = gsub(pattern = "Franklin|Clinton|Essex/Hamilton|Hamilton/Essex", replacement = "Eastern Adirondacks", borough)) %>%
+  transform(borough = gsub(pattern = "Franklin|Clinton|Essex|Hamilton", replacement = "Eastern Adirondacks", borough)) %>%
   transform(borough = gsub(pattern = "Herkimer|Jefferson|Lewis|Oneida|Oswego|St Lawrence", replacement = "Western Adirondacks", borough)) %>%
   transform(borough = gsub(pattern = "Broome|Cayuga|Chenango|Cortland|Madison|Onondaga|Otsego|Tioga|Tompkins", replacement = "Central New York", borough)) %>% 
   transform(borough=gsub(pattern="Chemung|Genesee|Livingston|Monroe|Ontario|Schuyler|Seneca|Steuben|Wayne|Yates",replacement="Finger Lakes", borough)) %>% 
@@ -476,22 +527,32 @@ rename_ia_2014= clean_ia_2014 %>%
   summarize(total_rate= sum(total))
 ```
 
+#### Merging
+
+```{r}
+merged_2014=
+  full_join(rename_lb_2014,rename_ia_2014, by="borough") %>%
+  janitor::clean_names() %>%
+  mutate(total = (total_rate_y / total_rate_x)*1000) %>% 
+  select(total, year_x)
+```
+
+## Final Merge
+
 Merge all datasets
 
 ```{r join}
 merged_data=
-bind_rows(rename_lb_2019, rename_ia_2019, rename_lb_2018, rename_ia_2018, by=rename_lb_2017, rename_ia_2017, rename_lb_2016, rename_ia_2016, rename_lb_2015, rename_ia_2015, rename_lb_2014, rename_ia_2014) %>%
-select(year, everything()) %>% 
-filter(!year=="year") %>% 
-mutate_at(c("total_rate", "year"), as.numeric) 
+bind_rows(merged_2019, merged_2018, merged_2017, merged_2016, merged_2015, merged_2014) %>% 
+  rename(year=year_x)
 ```
 
 #### Line chart by Year and Borough
 
 ```{r}
 plot_borough_year=merged_data %>% 
-  mutate(borough = fct_reorder(borough, total_rate)) %>% 
-plot_ly(y = ~total_rate, x=~year, color = ~borough, type = "scatter", mode="line", colors = "viridis") %>% 
+  mutate(borough = fct_reorder(borough, total)) %>% 
+plot_ly(y = ~total, x=~year, color = ~borough, type = "scatter", mode="line", colors = "viridis") %>% 
    layout(title = 'Induced Abortions Year by Borough', yaxis = list(title = 'Number of Induced Abortions per 1,000 Live Births'))
 
 plot_borough_year
