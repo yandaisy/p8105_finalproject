@@ -56,7 +56,9 @@ live_birth_finance =
 
 ```
 
-data cleaning
+#### Data Cleaning
+
+data cleaning live birth data
 
 ```{r data_cleaning_livebirths}
 clean_lb_finance= live_birth_finance %>% 
@@ -77,7 +79,7 @@ clean_lb_finance= live_birth_finance %>%
     janitor::clean_names()
 ```
 
-data cleaning induced abortions
+data cleaning induced abortions data
 
 ```{r data_cleaning_abortions}
 clean_ia_finance=
@@ -100,8 +102,35 @@ induced_abortion_finance %>%
 
 ```
 
+#### Renaming
 
-```{r rename}
+created regions based on this website: https://statejobs.ny.gov/assets/help/regionMapText.cfm
+
+renaming live births data of counties into regions.
+
+```{r rename live births}
+rename_lb_finance= clean_lb_finance %>% 
+  transform(borough = gsub(pattern = "Albany|Columbia|Fulton|Greene|Montgomery|Rensselaer|Saratoga|Schenectady|Schoharie|Warren|Washington", replacement = "Saratoga", borough)) %>%
+  transform(borough = gsub(pattern = "Franklin|Clinton|Essex|Hamilton", replacement = "Eastern Adirondacks", borough)) %>%
+  transform(borough = gsub(pattern = "Herkimer|Jefferson|Lewis|Oneida|Oswego|St Lawrence", replacement = "Western Adirondacks", borough)) %>%
+  transform(borough = gsub(pattern = "Broome|Cayuga|Chenango|Cortland|Madison|Onondaga|Otsego|Tioga|Tompkins", replacement = "Central New York", borough)) %>% 
+  transform(borough=gsub(pattern="Chemung|Genesee|Livingston|Monroe|Ontario|Schuyler|Seneca|Steuben|Wayne|Yates",replacement="Finger Lakes", borough)) %>% 
+  transform(borough=gsub(pattern="Allegany|Cattaraugus|Chautauqua|Erie|Niagara|Orleans|Wyoming",replacement="Western New York", borough)) %>% 
+  transform(borough=gsub(pattern="Delaware|Dutchess|Orange|Putnam|Sullivan|Ulster",replacement="Hudson Valley", borough)) %>% 
+  transform(borough=gsub(pattern="Rockland|Westchester", replacement="Westchester/Rockland", borough)) %>% 
+  transform(borough=gsub(pattern="Suffolk|Nassau", replacement="Long Island", borough)) %>% 
+  group_by(borough) %>% 
+  summarize (
+    total_rate= sum(total), 
+    total_medicaid= sum(medicaid),
+    total_other= sum(other_insurance), 
+    total_self= sum(self_pay),
+    total_not_stated= sum(not_stated))
+```
+
+renaming induced abortion data of counties into regions.
+
+```{r rename induced abortions}
 rename_ia_finance= clean_ia_finance %>% 
   transform(borough = gsub(pattern = "Albany|Columbia|Fulton|Greene|Montgomery|Rensselaer|Saratoga|Schenectady|Schoharie|Warren|Washington", replacement = "Saratoga", borough)) %>%
   transform(borough = gsub(pattern = "Franklin|Clinton|Essex|Hamilton", replacement = "Eastern Adirondacks", borough)) %>%
@@ -119,28 +148,29 @@ rename_ia_finance= clean_ia_finance %>%
     total_other= sum(other_insurance), 
     total_self= sum(self_pay),
     total_not_stated= sum(not_stated))
-
 ```
+
+#### Merging
 
 merging data to get rates from count data
 
 ```{r merge}
 merged_data=
-  full_join(clean_lb_finance,clean_ia_finance, by="borough") %>%
+  full_join(rename_lb_finance,rename_ia_finance, by="borough") %>%
   janitor::clean_names() %>%
   mutate(
-    medicaid = (medicaid_y / medicaid_x)*1000,
-    self_pay = (self_pay_y / self_pay_x)*1000,
-    other_insurance = (other_insurance_y / other_insurance_x)*1000,
-    not_stated = (not_stated_y / not_stated_x)*1000,
-    total = (total_y / total_x)*1000) %>% 
+    medicaid = (total_medicaid_y / total_medicaid_x)*1000,
+    self_pay = (total_self_y / total_self_x)*1000,
+    other_insurance = (total_other_y / total_other_x)*1000,
+    not_stated = (total_not_stated_y / total_not_stated_x)*1000,
+    total = (total_rate_y / total_rate_x)*1000) %>% 
 select(borough, medicaid, self_pay, other_insurance, not_stated, total) %>% 
   drop_na()
 ```
 
-created regions based on this website: https://statejobs.ny.gov/assets/help/regionMapText.cfm
+#### Plotting
 
-ggplot: induced abortion vs financial plans
+ggplot: induced abortion rates vs financial plans
 
 ```{r viz_finance}
 abortion_finance_plot = 
