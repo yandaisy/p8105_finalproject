@@ -480,7 +480,7 @@ Merge all datasets
 
 ```{r join}
 merged_data=
-rbind(rename_lb_2019, rename_ia_2019, rename_lb_2018, rename_ia_2018, by=rename_lb_2017, rename_ia_2017, rename_lb_2016, rename_ia_2016, rename_lb_2015, rename_ia_2015, rename_lb_2014, rename_ia_2014, by= c("borough", "year", "total_rate")) %>%
+bind_rows(rename_lb_2019, rename_ia_2019, rename_lb_2018, rename_ia_2018, by=rename_lb_2017, rename_ia_2017, rename_lb_2016, rename_ia_2016, rename_lb_2015, rename_ia_2015, rename_lb_2014, rename_ia_2014) %>%
 select(year, everything()) %>% 
 filter(!year=="year") %>% 
 mutate_at(c("total_rate", "year"), as.numeric) 
@@ -489,8 +489,8 @@ mutate_at(c("total_rate", "year"), as.numeric)
 #### Line chart by Year and Borough
 
 ```{r}
-plot_borough_year=year_final %>% 
-  mutate(borough = fct_reorder(borough, total)) %>% 
+plot_borough_year=merged_data %>% 
+  mutate(borough = fct_reorder(borough, total_rate)) %>% 
 plot_ly(y = ~total_rate, x=~year, color = ~borough, type = "scatter", mode="line", colors = "viridis") %>% 
    layout(title = 'Induced Abortions Year by Borough', yaxis = list(title = 'Number of Induced Abortions per 1,000 Live Births'))
 
