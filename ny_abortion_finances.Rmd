@@ -170,7 +170,7 @@ select(borough, medicaid, self_pay, other_insurance, not_stated, total) %>%
 
 #### Plotting
 
-ggplot: induced abortion rates vs financial plans
+ggplot: induced abortion vs financial plans
 
 ```{r viz_finance}
 abortion_finance_plot = 
